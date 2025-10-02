@@ -1,5 +1,11 @@
 # Release Notes
 
+## Version 20.1.1 Fixes 
+
+### 2025 October
+
+:white_check_mark: Fixed issue where inline attachments were skipped
+
 ## Version 20.1 Fixes
 
 ### 2025 April

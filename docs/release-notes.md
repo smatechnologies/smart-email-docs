@@ -1,5 +1,12 @@
 # Release Notes
 
+## Version 26.0.0 Fixes
+
+### 2026 January
+:white_check_mark: Fixed issue where email messages from Exchange Online were not being read correctly. 
+
+:white_check_mark: Fixed application crashes that occurred when processing emails without a subject line from Exchange Online.
+
 ## Version 20.1.1 Fixes 
 
 ### 2025 October

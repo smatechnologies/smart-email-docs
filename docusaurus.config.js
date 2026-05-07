@@ -1,12 +1,16 @@
-/** @type {import('@docusaurus/types').DocusaurusConfig} */
+/** @type {import('@docusaurus/types').Config} */
 module.exports = {
   title: 'SMA Technologies Help',
   tagline: 'Smart Email Utility',
   url: 'https://help.smatechnologies.com',
   baseUrl: '/opcon/connectors/smart-email/',
   onBrokenLinks: 'throw',
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
   organizationName: 'smatechnologies',
   projectName: 'smart-email-docs',
   themeConfig: {
@@ -16,6 +20,11 @@ module.exports = {
         alt: 'SMA Technologies Help Logo',
         src: 'img/logo.svg',
         href: 'https://help.smatechnologies.com',
+      },
+    },
+    docs: {
+      sidebar: {
+        autoCollapseCategories: true,
       },
     },
     footer: {
@@ -28,7 +37,7 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
-          breadcrumbs: false,
+          breadcrumbs: true,
           routeBasePath: '/',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
@@ -46,9 +55,13 @@ module.exports = {
   ],
   plugins: [
     [
-      require.resolve('@cmfcmf/docusaurus-search-local'), 
+      require.resolve('@easyops-cn/docusaurus-search-local'),
       {
-      }
+        hashed: true,
+        indexDocs: true,
+        indexBlog: false,
+        docsRouteBasePath: '/',
+      },
     ],
   ],
 };

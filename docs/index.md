@@ -1,31 +1,75 @@
 ---
 slug: '/'
-sidebar_label: 'Smart Email Overview'
+sidebar_label: 'SMArt Email'
+hide_table_of_contents: true
+displayed_sidebar: null
 ---
 
-# SMA Smart Email Utility 
+# SMArt Email
 
-The SMArt Email utility periodically checks a user's email to send OpCon events. Based on the contents of a configuration file, masks can be checked against the Subject of each email. If the Subject line of an email matches one of the predefined masks, an event will be generated.
- 
-The SMArt Email utility:
+The SMArt Email utility periodically checks an email mailbox and submits OpCon events when subject lines, body text, or attachment names match the masks defined in its configuration file.
 
-* Leverages TLS 1.1 and 1.2 security in its messaging
-* Supports multiple-line matching in the subject line or within the body of an email using regular expressions
-* Allows you to choose whether or not to download the processed emails
-* Allows you to select whether to download attachments and generate events based on attachment names.
+<div style={{display: 'flex', gap: '0.75rem', alignItems: 'flex-start', flexWrap: 'wrap', marginTop: '1rem'}}>
 
-## Scope
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
 
-This online help provides basic and advanced, conceptual and procedural information for running the SMArt Email utility.
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
 
-## Audience
+### Overview
 
-This online help is written for users with a working knowledge of the email server configuration and a basic understanding of automated job scheduling concepts.
+- [SMArt Email](./overview.md)
+- [Release notes](./release-notes.md)
 
-## Microsoft Compliance
+</div>
 
-To meet compliance as a Microsoft Certified Development Partner, SMA Technologies has standardized on storing application data files in the ProgramData directory by default when you install to the system drive. For more information, refer to [Determining Installation Locations](https://help.smatechnologies.com/opcon/core/installation/system-requirements#determining-installation-locations) in the OpCon Installation online help.
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
 
-## Windows File Names
+### Installation
 
-Some systems will not allow long file names (e.g., ```C:\Program Files\OpConxps\```). To work around this, revert to method 8.3. In this method, the 7th character becomes a tilde followed by a 1 (e.g., ```C:\Progra~1\OpConxps\```).
+- [Installation](./installation.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Configuration
+
+- [Configuration](./configuration.md)
+
+</div>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Operation
+
+- [Operation](./operation.md)
+
+</div>
+
+</div>
+
+<div style={{flex: '1', minWidth: '160px', display: 'flex', flexDirection: 'column', gap: '0.6rem'}}>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Reference
+
+- [Exit codes](./exit-codes.md)
+
+</div>
+
+<div style={{background: 'var(--ifm-card-background-color)', border: '1px solid var(--ifm-color-emphasis-400)', borderRadius: '10px', padding: '0.75rem 1rem'}}>
+
+### Troubleshooting
+
+- [MSAL troubleshooting](./msal-troubleshooting.md)
+
+</div>
+
+</div>
+
+</div>

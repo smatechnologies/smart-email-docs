@@ -22,14 +22,14 @@ Use this reference when you:
 
 | Exit code | Default | Meaning | Action |
 | --------- | ------- | ------- | ------ |
-| `0` | N/A | OK. Some emails were found that matched. | None. |
+| `0` | N/A | OK. The operation completed successfully. For a normal run, emails were found that matched. `--credentials` and `--renewMsalToken` also return `0` on success. | None. |
 | `1` | N/A | Command-line arguments error. | Verify the syntax. See [Operation](./operation.md). |
-| `2` | N/A | General error. | Review the job output and logs for details. |
+| `2` | N/A | General error, including a missing MSGIN directory or a missing required file. | Review the job output and logs for details. |
 | User-defined | `0` | No matching emails were found. | See the note below. |
 
 :::info Note — User-defined exit code for "no matches"
 
-The "no matches" exit code is set by `ExitCodeForNoMatchingEmails` in `SMArtEmail.ini` (or chosen during install).
+The "no matches" exit code is set by `ExitCodeForNoMatchingEmails` in `SMArtEmail.ini` (or chosen during install). Accepted values range from `-32768` through `32767`; the default is `0`.
 
 - **Existing users** who already modified their job failure criteria to allow exit code 3 do not need to modify their jobs.
 - **Users who want the job to fail** when no matching emails are found can set this to a non-zero value.

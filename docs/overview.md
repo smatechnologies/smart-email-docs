@@ -24,7 +24,7 @@ Use SMArt Email to:
 ## Key capabilities
 
 - Connects over IMAP, POP, or MSAL (for Microsoft-hosted Office 365 / Outlook.com mailboxes).
-- Supports TLS 1.1 and 1.2 for IMAP and POP connections.
+- Supports TLS 1.2, TLS 1.1, TLS 1.0, SSL 3.0, and SSL 2.0 for IMAP and POP connections. TLS 1.2 is the recommended choice; see [Encryption](./operation.md#encryption) for what each option permits.
 - Supports multi-line matching in the subject line or body using regular expressions.
 - Allows you to choose whether to download processed emails locally.
 - Allows you to download attachments and generate events based on attachment names.
@@ -41,16 +41,6 @@ This online help is written for users with a working knowledge of email server c
 - [Exit codes](./exit-codes.md) — exit codes returned by `smartemail.exe`.
 - [MSAL troubleshooting](./msal-troubleshooting.md) — recover from MSAL setup or token issues.
 - [Release notes](./release-notes.md) — version history.
-
-## Notes for installation and file paths
-
-### Microsoft compliance
-
-To meet compliance as a Microsoft Certified Development Partner, SMA Technologies has standardized on storing application data files in the `ProgramData` directory by default when you install to the system drive. For more information, refer to [Determining Installation Locations](https://help.smatechnologies.com/opcon/core/installation/system-requirements#determining-installation-locations) in the OpCon Installation online help.
-
-### Windows file names
-
-Some systems do not allow long file names (for example, `C:\Program Files\OpConxps\`). To work around this, revert to method 8.3. In this method, the 7th character becomes a tilde followed by a 1 (for example, `C:\Progra~1\OpConxps\`).
 
 ## Glossary
 

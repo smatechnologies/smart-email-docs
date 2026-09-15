@@ -1,8 +1,14 @@
 ---
 slug: '/'
+title: SMArt Email
+description: "Trigger OpCon events from inbound email with the SMArt Email utility: installation, configuration, operation, and troubleshooting."
 sidebar_label: 'SMArt Email'
 hide_table_of_contents: true
 displayed_sidebar: null
+tags:
+  - Conceptual
+  - System Administrator
+  - Smart Email
 ---
 
 # SMArt Email

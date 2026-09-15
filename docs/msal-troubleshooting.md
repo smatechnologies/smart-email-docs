@@ -55,6 +55,17 @@ SMArtEmail.exe --msal --renewMsalToken --renewTokenSilent
 
 Running this command keeps the refresh token alive and prevents you from needing to go through interactive authorization again.
 
+:::caution
+
+The silent refresh reads the account to refresh from the configuration file, so an interactive `SMArtEmail.exe --msal --renewMsalToken` must have succeeded at least once before you schedule it. If `Tenant` or `User` is not yet set, the run ends with one of the following errors:
+
+```
+--renewTokenSilent requires Tenant to be set in INI. Please run SMArtEmail.exe --renewMsalToken
+--renewTokenSilent requires User to be set in INI. Please run SMArtEmail.exe --renewMsalToken
+```
+
+:::
+
 ## FAQs
 
 **Does the MSAL option work for an on-premises Exchange server?**

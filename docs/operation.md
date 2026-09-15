@@ -174,7 +174,7 @@ Used with `--renewMsalToken`.
 | `--renewTokenSilent` | Refresh the token without opening a browser. Requires `Tenant` and `User` to be set in the configuration file already. See [MSAL troubleshooting](./msal-troubleshooting.md). |
 | `--doNotSaveAccount` | Prevents storing a token to an account on this machine. Typically used to prevent saving an access token to an Administrator's email. |
 
-### Set the credentials
+## Set the credentials
 
 The `--credentials` operation encrypts the mailbox and OpCon credentials into the configuration file, and must be run once before the first normal run. For the syntax and its arguments, see [Set or modify credentials](./configuration.md#set-or-modify-credentials).
 

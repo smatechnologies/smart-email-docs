@@ -16,7 +16,14 @@ This page covers installing SMArt Email for the first time and upgrading an exis
 Before beginning, make sure the following requirements are met:
 
 - A supported version of Windows with .NET Framework 4.8 installed.
-- A supported version of the MSLSAM installed on the machine.
+- A supported version of the Windows agent installed on the machine.
+- The SAM's MSGIN directory already exists. SMArt Email does not create it, and a run ends with exit code `2` if the directory it is configured to write to is missing.
+
+### File path notes
+
+**Microsoft compliance.** To meet compliance as a Microsoft Certified Development Partner, Continuous has standardized on storing application data files in the `ProgramData` directory by default when you install to the system drive. For more information, refer to [Determining Installation Locations](https://help.smatechnologies.com/opcon/core/installation/system-requirements#determining-installation-locations) in the OpCon Installation online help.
+
+**Windows file names.** Some systems do not allow long file names (for example, `C:\Program Files\OpConxps\`). To work around this, revert to method 8.3. In this method, the 7th character becomes a tilde followed by a 1 (for example, `C:\Progra~1\OpConxps\`).
 
 ## Choose an installation path
 
@@ -71,6 +78,21 @@ You can configure the External Event authentication and Email Server connection 
 4. Wait while the installation completes. This may take a few minutes.
 5. Select **Finish** on the **InstallShield Wizard Completed** screen.
 
+### 5. Verify the installation
+
+To confirm SMArt Email can reach the mailbox before you schedule it in OpCon, complete the following steps.
+
+1. Open a command prompt and go to the SMArt Email installation directory.
+2. Run the utility once against the configured mailbox, substituting your own server, port, and protocol:
+
+   ```
+   smartemail.exe -server:imap.example.com -port:993 --imap --tls1_2
+   ```
+
+3. Review the output. A successful run reports the number of emails processed and ends with exit code `0`.
+
+An exit code of `1` means the arguments were rejected, and `2` means a general failure such as a missing MSGIN directory. See [Exit codes](./exit-codes.md) for the full list.
+
 ## Install for MSAL
 
 The MSAL option works only for Microsoft-hosted mailboxes (Office 365 / Outlook.com). On-premises Exchange servers must use IMAP or POP. To install SMArt Email for **MSAL**, complete the following steps.
@@ -119,6 +141,21 @@ Choose the path that matches your environment.
 4. Open a command prompt and go to the SMArtEmail installation directory.
 5. Run `SMArtEmail.exe --renewMsalToken`.
 6. A web browser opens a Microsoft Login page; select your SMArtEmail account.
+
+### 4. Verify the installation
+
+To confirm SMArt Email can reach the mailbox with the stored token, complete the following steps.
+
+1. Open a command prompt and go to the SMArt Email installation directory.
+2. Run the utility once using the stored token:
+
+   ```
+   smartemail.exe --msal
+   ```
+
+3. Review the output. A successful run reports the number of emails processed and ends with exit code `0`.
+
+If the run reports a permission or token error, see [MSAL troubleshooting](./msal-troubleshooting.md).
 
 ## Upgrade installation
 

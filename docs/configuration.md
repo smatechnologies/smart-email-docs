@@ -107,11 +107,11 @@ SMArt Email supports IMAP, POP, and MSAL.
 
 ### Encryption level (IMAP and POP)
 
-SMArt Email supports SSL 3.0, TLS 1.1, and TLS 1.2 encryption levels.
+SMArt Email supports SSL 2.0, SSL 3.0, TLS 1.0, TLS 1.1, and TLS 1.2. Each value sets the minimum protocol version to accept rather than an exact one, so decide which is the lowest version your email server should be allowed to negotiate. For what each value permits, see `SecurityProtocol` in [`[Mail]` settings](#mail-settings).
 
 ### Port
 
-Depending on the protocol and encryption level, set the port to 993, 465, 564, or any other acceptable port number.
+Decide the port from the protocol and encryption level — for example 993 for IMAP over TLS, or 995 for POP over TLS. The port is required: SMArt Email does not supply one, and the connection is not attempted without it.
 
 ### OpCon
 
@@ -134,7 +134,7 @@ smartemail.exe --credentials -user:[value] -password:[value] -opconuser:[value] 
 
 | Argument | Required | Description |
 | -------- | -------- | ----- |
-| `-credentials` | Y | Sets the user credentials and encrypts the username and passwords in the configuration file. The utility must run with this parameter once before normal operation. |
+| `--credentials` | Y | Sets the user credentials and encrypts the username and passwords in the configuration file. The utility must run with this parameter once before normal operation. |
 | `-user` | N | Used with `--credentials`. Defines the username for the email inbox monitored by SMArt Email. **IMAP** and **POP** only. |
 | `-password` | N | Used with `--credentials`. Defines the password for the email inbox. **IMAP** and **POP** only. |
 | `-opconuser` | Y | Used with `--credentials`. Defines the OpCon username that runs the events triggered by SMArt Email. |
@@ -155,23 +155,33 @@ All settings in `SMArtEmail.ini` apply to the machine on which the file resides.
 
 | Setting | Default | Description |
 | ------- | ------- | ----------- |
-| `MSGINDirectory` | `%PROGRAMDATA%\OpConxps\SAM\MSGIN` | Path to which SMArt Email writes the events. |
+| `MSGINDirectory` | Required | Path to which SMArt Email writes the events. See note below. |
 | `OpConUser` | Blank | OpCon user with privileges to create Notification Events. |
 | `OpConUserPassword` | Blank | External event password for the defined OpConUser. |
-| `DeleteEmails` | `Match` | Deletes emails after processing. Values: `Match`, `All`, or `None`. |
-| `DownloadEmails` | `True` | If `TRUE`, downloads all processed emails to a specific location. Values: `True` or `False`. |
-| `DownloadFolder` | `%PROGRAMDATA%\OpConxps\SMArt Email\Received` | Folder used for processing emails that match a mask. See note below. |
-| `ExitCodeForNoMatchingEmails` | `0` | Exit code returned when no matching emails are found. See note below. |
-| `UseLastRunDate` | `True` | If `TRUE`, tracks the most recently received email it processes in the `LastRunDate` value after each run. Values: `True` or `False`. |
+| `DeleteEmails` | `None` | Deletes emails after processing. Values: `Match` or `All`. See note below. |
+| `DownloadEmails` | `False` | If `TRUE`, downloads all processed emails to a specific location. Values: `True` or `False`. |
+| `DownloadFolder` | None | Folder used for processing emails that match a mask. Required when `DownloadEmails` is `True`. See note below. |
+| `ExitCodeForNoMatchingEmails` | `0` | Exit code returned when no matching emails are found. Accepted values range from `-32768` through `32767`. See note below. |
+| `UseLastRunDate` | `False` | If `TRUE`, tracks the most recently received email it processes in the `LastRunDate` value after each run. Values: `True` or `False`. See note below. |
 | `LastRunDate` | Blank | Time stamp of the last email processed. On subsequent runs, only emails received on or after this date are processed. See note below. |
 
 :::info Notes
 
-**`DownloadFolder`** — As a best practice, periodically clean up this folder using the SMADirectory utility. For more information, see [SMADirectory](https://help.smatechnologies.com/opcon/core/utilities/Command-line-Utilities/SMADirectory) in the Utilities online help.
+**`MSGINDirectory`** — This setting is required and has no default. Set it to the path of the SAM's MSGIN directory, for example `%PROGRAMDATA%\OpConxps\SAM\MSGIN`. The directory must already exist; SMArt Email does not create it, and a run ends with exit code `2` if the path is missing.
+
+**`DeleteEmails`** — If you omit this setting, SMArt Email deletes nothing. Set it to `Match` to delete only the emails that matched a configuration, or `All` to delete every email retrieved.
+
+**`DownloadFolder`** — This setting has no default. Set it whenever `DownloadEmails` is `True`, because SMArt Email creates and writes to the folder named here. As a best practice, periodically clean up this folder using the SMADirectory utility. For more information, see [SMADirectory](https://help.smatechnologies.com/opcon/core/utilities/Command-line-Utilities/SMADirectory) in the Utilities online help.
 
 **`ExitCodeForNoMatchingEmails`** — Users who already modified their job failure criteria to allow exit code 3 do not need to modify their jobs. Users who want the job to fail when no matching emails are found can set this to a non-zero value. New users and users upgrading SMArt Email do not need to modify the INI configuration file and can choose the default during install.
 
 **`LastRunDate`** — To re-process emails from a specific date range, override this value with a valid date and time, for example: `1/1/2017 12:30:00 AM`.
+
+:::
+
+:::caution
+
+`UseLastRunDate` is `False` unless you set it. While it is `False`, every run evaluates all of the mail it can retrieve, including mail processed on earlier runs, so the same email generates its event again on each run. Set `UseLastRunDate=True` when you schedule SMArt Email to run repeatedly against the same mailbox.
 
 :::
 
@@ -186,8 +196,8 @@ Set these values using the `--credentials` program switch since the utility requ
 | `Server` | Blank | Name of the email server to connect to. See note below. |
 | `EmailProtocol` | Blank | Values: `IMAP`, `POP`, or `MSAL`. |
 | `SecurityProtocol` | Blank | Values: `SSL`, `SSL2`, `TLS1`, `TLS1_1`, or `TLS1_2`. See note below. |
-| `Port` | Blank | Port number. The required port depends on `EmailProtocol` and `SecurityProtocol`. |
-| `SelfSignedCertificate` | `True` | If `TRUE`, allows a self-signed certificate to be accepted. Values: `True` or `False`. |
+| `Port` | Required | Port number. The required port depends on `EmailProtocol` and `SecurityProtocol`. See note below. |
+| `SelfSignedCertificate` | `False` | If `TRUE`, allows a self-signed certificate to be accepted. Values: `True` or `False`. See note below. |
 
 :::info Notes
 
@@ -201,6 +211,10 @@ Set these values using the `--credentials` program switch since the utility requ
 - `TLS1_1` — Allow TLS 1.1 or above.
 - `TLS1_2` — Allow only TLS 1.2.
 
+**`Port`** — This setting is required and has no default. Set it here, or pass `-port` on the command line. Conventional values are `143` for IMAP, `993` for IMAP over TLS, `110` for POP, and `995` for POP over TLS, but SMArt Email does not apply any of them for you.
+
+**`SelfSignedCertificate`** — This setting is `False` unless you set it, so a self-signed certificate is rejected by default. Set it to `True` when your email server presents a self-signed certificate.
+
 :::
 
 ### `[Audit]` settings
@@ -211,25 +225,25 @@ The audit settings configure audit log file format and event notifications durin
 
 | Setting | Default | Description |
 | ------- | ------- | ----------- |
-| `AuditAcceptLogFile` | `Audit.log` | Log file to which accepted emails are logged. |
+| `AuditAcceptLogFile` | `Accept.log` | Log file to which accepted emails are logged. |
 | `LogAccepts` | `False` | Whether to log accepted emails to the file. Values: `True` or `False`. |
-| `LogAcceptFormat` | `SMArt Email - Message Accepted - From: [[SENDER]] Subject: [[SUBJECT]]` | Format of the log message for an accepted email. |
+| `LogAcceptFormat` | `Email Accepted - [[SUBJECT]]` | Format of the log message for an accepted email. |
 | `NotifyOnAccepts` | `False` | Whether to send an email back to the initiator when a configured `SubjectLineMask` matches the subject line. Values: `True` or `False`. |
-| `NotifyOnAcceptSubject` | `SMArt Email - Message Accepted - From: [[SENDER]] Subject: [[SUBJECT]]` | Subject of the notification email sent on acceptance. |
-| `NotifyOnAcceptBody` | `Email message was accepted and generated event: [[EVENT]]` | Body of the notification email sent on acceptance. |
+| `NotifyOnAcceptSubject` | `Email Accepted - [[SUBJECT]]` | Subject of the notification email sent on acceptance. |
+| `NotifyOnAcceptBody` | `Email from [[SENDER]] was accepted` | Body of the notification email sent on acceptance. |
 | `NotifyOnAcceptTo` | `[[SENDER]]` | Recipient list for accepted email notifications. For multiple users, use a semicolon-separated list. |
 
 #### Rejection logging and notification
 
 | Setting | Default | Description |
 | ------- | ------- | ----------- |
-| `AuditRejectLogFile` | `Audit.log` | Log file to which rejected emails are logged. |
+| `AuditRejectLogFile` | `Reject.log` | Log file to which rejected emails are logged. See note below. |
 | `LogRejects` | `False` | Whether to log rejected emails to the file. Values: `True` or `False`. See note below. |
-| `LogRejectFormat` | `SMArt Email - Message Rejected - From: [[SENDER]] Subject: [[SUBJECT]]` | Format of the log message for a rejected email. |
+| `LogRejectFormat` | `Message Rejected - From: [[SENDER]]` | Format of the log message for a rejected email. |
 | `NotifyOnRejects` | `False` | Whether to send an email back to the initiator when no `SubjectLineMask` matches. Values: `True` or `False`. |
-| `NotifyOnRejectSubject` | `SMArt Email - Message Rejected - From: [[SENDER]] Subject: [[SUBJECT]]` | Subject of the notification email sent on rejection. |
-| `NotifyOnRejectBody` | `Email message sent on [[DATE]] was rejected for reason: [[REASON]]` | Body of the notification email sent on rejection. |
-| `NotifyOnRejectTo` | `[[SENDER]]` | Recipient list for rejected email notifications. For multiple users, use a semicolon-separated list. |
+| `NotifyOnRejectSubject` | `Email Rejected - [[SUBJECT]]` | Subject of the notification email sent on rejection. |
+| `NotifyOnRejectBody` | `Email from [[SENDER]] was rejected: [[REASON]]` | Body of the notification email sent on rejection. |
+| `NotifyOnRejectTo` | None | Recipient list for rejected email notifications. For multiple users, use a semicolon-separated list. Required when `NotifyOnRejects` is `True`. See note below. |
 
 :::info Note
 
@@ -238,15 +252,21 @@ The audit settings configure audit log file format and event notifications durin
 - The subject of the email matched one of the configurations, but for some other reason it did not generate a match. For example, the sender was not in the allowed list, the time was not in the allowed time frame, or there were no matching attachments when `ProcessAttachments` is true.
 - The email matched zero configurations.
 
+**`AuditRejectLogFile`** — Accepted and rejected emails go to different files by default. To keep both in one file, set `AuditAcceptLogFile` and `AuditRejectLogFile` to the same value.
+
+**`NotifyOnRejectTo`** — This setting has no default, unlike `NotifyOnAcceptTo`, which defaults to `[[SENDER]]`. Set a recipient whenever `NotifyOnRejects` is `True`; otherwise the rejection notification has no recipient.
+
 :::
 
 #### Rejection reason messages
 
 | Setting | Default | Description |
 | ------- | ------- | ----------- |
-| `RejectTimeframeMessage` | `Message received outside timeframe` | Message used in the `[[REASON]]` token if an email is rejected due to its time frame. |
-| `RejectSenderMessage` | `Invalid Sender` | Message used in the `[[REASON]]` token if the sender is not in `AllowedSenders`. |
-| `RejectNoMatchingSubjectMessage` | `No matching subjects found` | Message used in the `[[REASON]]` token if the email does not match any existing configurations. |
+| `RejectTimeframeMessage` | `Email not in allowed time frame` | Message used in the `[[REASON]]` token if an email is rejected due to its time frame. |
+| `RejectSenderMessage` | `Sender not in allowed list` | Message used in the `[[REASON]]` token if the sender is not in `AllowedSenders`. |
+| `RejectSubjectMessage` | `Subject rejected` | Message used in the `[[REASON]]` token if the subject line does not match `SubjectLineMask`. |
+| `RejectBody` | `No matching lines in body` | Message used in the `[[REASON]]` token if no line in the email body matches `SubjectLineMask`. |
+| `RejectNoMatchingSubjectsMessage` | `No matching subjects found` | Message used in the `[[REASON]]` token if the email does not match any existing configurations. |
 | `RejectNoAttachmentMessage` | `No matching attachments found` | Message used in the `[[REASON]]` token if the email does not have any attachments or any matching attachment, yet `ProcessAttachments` is `TRUE` and the subject of the email matches. |
 
 #### Generated rejection event and event logging
@@ -255,7 +275,7 @@ The audit settings configure audit log file format and event notifications durin
 | ------- | ------- | ----------- |
 | `RejectEvent` | N/A | Generates an event when an email is rejected. Add the event along with tokens from the email. If no value is present, no events are generated on rejects. |
 | `LogOpConEvents` | N/A | Whether the events generated by email should be logged. Values: `True` or `False`. |
-| `OpConEventLogFile` | N/A | File name and path of the file to log events. |
+| `OpConEventLogFile` | `OpConEvents.log` | File name and path of the file to log events. |
 | `LogOpConEventFormat` | `Generated Event: [[Event]]` | Format of the logged events. |
 
 ### `[Tokens]` settings
@@ -280,6 +300,7 @@ The Configuration section of the file contains one section for each mask and eve
 | `QualifyingSubjectLine` | Optional. Used with `ProcessBody`. Default `""`. See `ProcessBody`. |
 | `AttachmentMask` | Optional. The mask to search for an attachment name, written as a regular expression. |
 | `ProcessAttachments` | `true` / `false`. Use when you want to generate events based on `AttachmentMask`. |
+| `UseWildCards` | Optional. Default `false`. Write `SubjectLineMask` as a wildcard pattern instead of a regular expression. See note below. |
 
 :::info Notes
 
@@ -306,6 +327,14 @@ The Configuration section of the file contains one section for each mask and eve
 - This directive specifies that the body of the email should be included in the lines processed. It works with `QualifyingSubjectLine` to determine exactly how the email is handled. If `ProcessBody` is `YES`:
   - If `QualifyingSubjectLine` is empty, each line in the body is evaluated against `SubjectLineMask` in addition to comparing the subject line. Matches to the subject or body lines can generate events.
   - If `QualifyingSubjectLine` contains a value, the subject line is compared to it. If the subject line matches `QualifyingSubjectLine`, each line in the body is then compared against `SubjectLineMask`. Testing the subject against `QualifyingSubjectLine` does NOT generate events; it only filters out unwanted matches between email bodies and mask lines.
+
+**`UseWildCards`** —
+
+- Default (if not specified) is `false`, which evaluates `SubjectLineMask` as a regular expression.
+- A value of `true` lets you write `SubjectLineMask` as a wildcard pattern: `*` matches any sequence of characters, and `?` matches any single character. For example, `Invoice ??-*` matches `Invoice 04-March` and `Invoice 12-April`.
+- Other regular-expression characters keep their meaning, so write plain text and wildcards only.
+- Patterns are not anchored — they match anywhere in the subject line. For example, `Invoice*` also matches `Re: Invoice 04`. This is the same as the regular-expression behavior.
+- `UseWildCards` applies to the subject line, and only when `ProcessBody` is not enabled. Body lines are always evaluated as regular expressions.
 
 :::
 
@@ -368,7 +397,7 @@ NotifyOnRejectBody=Email message sent on [[DATE]] was rejected for reason: [[REA
 NotifyOnRejectTo=[[SENDER]]
 RejectTimeframeMessage=Message received outside timeframe
 RejectSenderMessage=Invalid Sender
-RejectNoMatchingSubjectMessage=No matching subjects found
+RejectNoMatchingSubjectsMessage=No matching subjects found
 RejectNoAttachmentMessage=No matching attachments found
 RejectEvent=N\A
 LogOpConEvents=N\A
@@ -445,7 +474,7 @@ NotifyOnRejectBody=Email message sent on [[DATE]] was rejected for reason: [[REA
 NotifyOnRejectTo=[[SENDER]]
 RejectTimeframeMessage=Message received outside timeframe
 RejectSenderMessage=Invalid Sender
-RejectNoMatchingSubjectMessage=No matching subjects found
+RejectNoMatchingSubjectsMessage=No matching subjects found
 RejectNoAttachmentMessage=No matching attachments found
 RejectEvent=N/A
 LogOpConEvents=N/A
@@ -525,7 +554,7 @@ NotifyOnRejectBody=Email message sent on [[DATE]] was rejected for reason: [[REA
 NotifyOnRejectTo=[[SENDER]]
 RejectTimeframeMessage=Message received outside timeframe
 RejectSenderMessage=Invalid Sender
-RejectNoMatchingSubjectMessage=No matching subjects found
+RejectNoMatchingSubjectsMessage=No matching subjects found
 RejectNoAttachmentMessage=No matching attachments found
 RejectEvent=N/A
 LogOpConEvents=N/A
@@ -611,10 +640,10 @@ All information produced by the job is available in the job output and can be re
 ## FAQs
 
 **Where is `SMArtEmail.ini` stored by default?**
-In `C:\ProgramData\OpConxps\SMArt Email`. The `OpConxps` folder is hidden by default in File Explorer; type `C:\ProgramData` directly into the address bar to navigate to it.
+In `C:\ProgramData\OpConxps\SMArt Email`. The `OpConxps` folder is hidden by default in File Explorer; type `C:\ProgramData` directly into the address bar to open it.
 
 **Can I use a different INI file?**
-Yes. Use the `-inifile:[value]` argument with `--credentials` to specify an alternate configuration file.
+Yes. Use the `-inifile:[value]` argument to specify an alternate configuration file. It applies to a normal run, to `--credentials`, and to `--renewMsalToken`.
 
 **Why must I run `--credentials` before normal operation?**
 The username and password values must be encrypted in the INI file before SMArt Email can use them. The first run with `--credentials` performs that encryption.
